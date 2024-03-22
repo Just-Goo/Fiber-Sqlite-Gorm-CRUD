@@ -3,11 +3,11 @@ package repository
 import "gorm.io/gorm"
 
 type Repository interface {
-	Create(model interface{}) interface{}
-	// GetById(model interface{}, id int) []interface{}
-	// GetAll(model interface{}) []interface{}
-	// Update(model interface{}, data interface{}) interface{}
-	// Delete(model interface{}, id int) error
+	Create(model interface{})
+	GetById(model interface{}, id int)
+	GetAll(model interface{})
+	Update(model interface{}) 
+	Delete(model interface{}) error
 }
 
 type Repo struct {

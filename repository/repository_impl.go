@@ -6,26 +6,25 @@ type RepositoryImpl struct {
 	DB *gorm.DB
 }
 
-func (r *RepositoryImpl) Create(model interface{}) interface{} {
+func (r *RepositoryImpl) Create(model interface{}) {
 	r.DB.Create(model)
-	return model
 }
 
-// func (r *RepositoryImpl) GetById(model interface{}, id int) []interface{} {
+func (r *RepositoryImpl) GetById(model interface{}, id int) {
+	r.DB.Find(model, "id = ?", id)
+}
 
-// }
+func (r *RepositoryImpl) GetAll(model interface{}) {
+	r.DB.Find(model)
+}
 
-// func (r *RepositoryImpl) GetAll(model interface{}) []interface{} {
+func (r *RepositoryImpl) Update(model interface{}) {
+	r.DB.Save(model)
+}
 
-// }
-
-// func (r *RepositoryImpl) Update(model interface{}, data interface{}) interface{} {
-
-// }
-
-// func (r *RepositoryImpl) Delete(model interface{}, id int) error {
-
-// }
+func (r *RepositoryImpl) Delete(model interface{}) error {
+	return r.DB.Delete(model).Error
+}
 
 func NewRepositoryImpl(db *gorm.DB) *RepositoryImpl {
 	return &RepositoryImpl{DB: db}

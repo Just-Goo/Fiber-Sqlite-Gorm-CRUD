@@ -12,5 +12,9 @@ func RegisterRoutes(app *fiber.App, service *service.MainService) {
 
 	// User endpoints
 	v1.Post("/users", handler.CreateUser)
+	v1.Get("/users", handler.GetUsers)
+	v1.Get("/users/:id", handler.GetUserById)
+	v1.Put("/users/:id", handler.UpdateUser)
+	v1.Delete("/users/:id", handler.DeleteUser)
 
 }
