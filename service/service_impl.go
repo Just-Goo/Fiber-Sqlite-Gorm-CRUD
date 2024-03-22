@@ -47,6 +47,45 @@ func (s *ServiceImpl) DeleteUser(model *models.User, id int) error {
 	return s.Repo.Delete(model)
 }
 
+// Products
+
+func (s *ServiceImpl) CreateProduct(model *models.Product) {
+	s.Repo.Create(model)
+}
+
+func (s *ServiceImpl) FetchProducts(model *[]models.Product) {
+	s.Repo.GetAll(model)
+}
+
+func (s *ServiceImpl) FetchProductById(model *models.Product, id int) error {
+	s.Repo.GetById(model, id)
+	if model.ID == 0 {
+		return fmt.Errorf("product does not exist")
+	}
+	return nil
+}
+
+func (s *ServiceImpl) UpdateProduct(model, updatedProduct *models.Product, id int) {
+
+	// Get the product from database
+	s.Repo.GetById(model, id)
+
+	model.Name = updatedProduct.Name
+	model.SerialNumber = updatedProduct.SerialNumber
+
+	s.Repo.Update(model)
+}
+
+func (s *ServiceImpl) DeleteProduct(model *models.Product, id int) error {
+
+	// Get the product from database
+	s.Repo.GetById(model, id)
+
+	// delete the product
+	return s.Repo.Delete(model)
+}
+
+
 func NewServiceImpl(repo repository.Repository) *ServiceImpl {
 	return &ServiceImpl{Repo: repo}
 }

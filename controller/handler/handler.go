@@ -10,6 +10,7 @@ type Handler struct {
 	Service service.Service
 }
 
+// Users
 func (h *Handler) CreateUser(c *fiber.Ctx) error {
 	var user models.User
 
@@ -72,6 +73,71 @@ func (h *Handler) DeleteUser(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).SendString("user deleted successfully")
 }
+
+// Products
+func (h *Handler) CreateProduct(c *fiber.Ctx) error {
+	var product models.Product
+
+	if err := c.BodyParser(&product); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
+	}
+
+	h.Service.CreateProduct(&product)
+	return c.Status(fiber.StatusCreated).JSON(product)
+}
+
+func (h *Handler) GetProducts(c *fiber.Ctx) error {
+	var products []models.Product
+
+	h.Service.FetchProducts(&products)
+	return c.Status(fiber.StatusOK).JSON(products)
+}
+
+func (h *Handler) GetProductById(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("id must be an integer")
+	}
+
+	var product models.Product
+
+	if err = h.Service.FetchProductById(&product, id); err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+	}
+	return c.Status(fiber.StatusOK).JSON(product)
+}
+
+func (h *Handler) UpdateProduct(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("id must be aan integer")
+	}
+
+	var product, updatedProduct models.Product
+
+	if err := c.BodyParser(&updatedProduct); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
+	}
+
+	h.Service.UpdateProduct(&product, &updatedProduct, id)
+	return c.Status(fiber.StatusOK).JSON(product)
+}
+
+func (h *Handler) DeleteProduct(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("id must be aan integer")
+	}
+
+	var product models.Product
+
+	if err = h.Service.DeleteProduct(&product, id); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(err.Error())
+	}
+
+	return c.Status(fiber.StatusOK).SendString("product deleted successfully")
+}
+
 
 func NewHandler(service service.Service) *Handler {
 	return &Handler{Service: service}
