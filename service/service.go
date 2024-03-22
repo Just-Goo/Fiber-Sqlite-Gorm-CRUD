@@ -19,6 +19,13 @@ type Service interface {
 	FetchProductById(model *models.Product, id int) error
 	UpdateProduct(model, updatedProduct *models.Product, id int)
 	DeleteProduct(model *models.Product, id int) error
+
+	// Orders
+	CreateOrder(model *models.Order) map[string]interface{}
+	FetchOrders(model *[]models.Order) []models.Order
+	FetchOrderById(model *models.Order, id int) error
+	UpdateOrder(model, updatedOrder *models.Order, id int)
+	DeleteOrder(model *models.Order, id int) error
 }
 
 type MainService struct {
@@ -26,5 +33,5 @@ type MainService struct {
 }
 
 func NewMainService(repo *repository.Repo) *MainService {
-return &MainService{Service: NewServiceImpl(repo.Repo)}
+	return &MainService{Service: NewServiceImpl(repo.Repo)}
 }

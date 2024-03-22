@@ -138,6 +138,69 @@ func (h *Handler) DeleteProduct(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).SendString("product deleted successfully")
 }
 
+// Orders
+func (h *Handler) CreateOrder(c *fiber.Ctx) error {
+	var order models.Order
+
+	if err := c.BodyParser(&order); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
+	}
+
+	result := h.Service.CreateOrder(&order)
+	return c.Status(fiber.StatusCreated).JSON(result)
+}
+
+func (h *Handler) GetOrders(c *fiber.Ctx) error {
+	var orders []models.Order
+
+	result := h.Service.FetchOrders(&orders)
+	return c.Status(fiber.StatusOK).JSON(result)
+}
+
+func (h *Handler) GetOrderById(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("id must be an integer")
+	}
+
+	var order models.Order
+
+	if err = h.Service.FetchOrderById(&order, id); err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+	}
+	return c.Status(fiber.StatusOK).JSON(order)
+}
+
+func (h *Handler) UpdateOrder(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("id must be aan integer")
+	}
+
+	var order, updatedOrder models.Order
+
+	if err := c.BodyParser(&updatedOrder); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
+	}
+
+	h.Service.UpdateOrder(&order, &updatedOrder, id)
+	return c.Status(fiber.StatusOK).JSON(order)
+}
+
+func (h *Handler) DeleteOrder(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("id must be aan integer")
+	}
+
+	var order models.Order
+
+	if err = h.Service.DeleteOrder(&order, id); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(err.Error())
+	}
+
+	return c.Status(fiber.StatusOK).SendString("order deleted successfully")
+}
 
 func NewHandler(service service.Service) *Handler {
 	return &Handler{Service: service}

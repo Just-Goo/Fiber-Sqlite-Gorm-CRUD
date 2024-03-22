@@ -24,4 +24,11 @@ func RegisterRoutes(app *fiber.App, service *service.MainService) {
 	v1.Put("/products/:id", handler.UpdateProduct)
 	v1.Delete("/products/:id", handler.DeleteProduct)
 
+	// Order endpoints
+	v1.Post("/orders", handler.CreateOrder)
+	v1.Get("/orders", handler.GetOrders)
+	v1.Get("/orders/:id", handler.GetOrderById)
+	v1.Put("/orders/:id", handler.UpdateOrder)
+	v1.Delete("/orders/:id", handler.DeleteOrder)
+
 }
